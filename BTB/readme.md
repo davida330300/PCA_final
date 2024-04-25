@@ -2,6 +2,7 @@ compile:
 `
 gcc -g -flto -O3 -Wall -Wextra scramble.c perf.c gadget.c main.c -o branch
 `
+echo 1 | sudo tee /proc/sys/vm/nr_hugepages
 
 run test 
 

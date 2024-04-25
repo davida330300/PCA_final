@@ -31,7 +31,7 @@ def print_data(branch_types, data):
 def plot_data(sizes, data):
     plt.figure(figsize=(10, 6))
     for branch, color in zip(data.keys(), ['blue', 'green', 'red']):
-        plt.plot(sizes, data[branch], marker='o', label=branch, color=color)
+        plt.plot(sizes, data[branch], marker='', label=branch, color=color)
     plt.xlabel('size')
     plt.ylabel('CPU Cycle')
     plt.title('Intel i5_7200U BTB Size Test')
