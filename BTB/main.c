@@ -69,7 +69,7 @@ int main(int argc, char **argv)
 	int scramble_mode = 0;
 	int cpu_number = 0;
 	char *type = "jmp";
-
+    //char *type = "jne";
 	/* Here is a problem. On aarch64 the timer is not precise
 	 * enough to catch very short loops. Lets run the thing N
 	 * times (10?) for small runs. */
