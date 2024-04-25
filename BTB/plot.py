@@ -34,10 +34,10 @@ def plot_data(sizes, data):
         plt.plot(sizes, data[branch], marker='o', label=branch, color=color)
     plt.xlabel('size')
     plt.ylabel('CPU Cycle')
-    plt.title('AMD R5-5600H BTB Size Test')
+    plt.title('Intel i5_7200U BTB Size Test')
     plt.legend()
     plt.grid(True)
-    plt.savefig("AMD_instruction.png")
+    plt.savefig("Intel_instruction.png")
     plt.show()
 
 def main():
