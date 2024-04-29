@@ -3,68 +3,76 @@ import subprocess
 import shlex
 import sys
 import os
-
 from matplotlib import pyplot as plt
 
-JJJJ = (4,8,16,32,64)
-TTTT =list(range(128,8192+128,128))
-
-A={}
-size = []
-block_size_4 = []
-block_size_8 = []
-block_size_16 = []
-block_size_32 = []
-block_size_64 = []
-
-for j in JJJJ:
-    cmd = "./branch -a%d -t%s" % (j, ' '.join(sys.argv[1:]))
-    for t in TTTT:
-        if os.environ.get("SKIP") and j*t >= 200000:
-            continue
-        p = subprocess.run(
-            shlex.split(cmd + ' -c%d' % t),
-            stdout=subprocess.PIPE)
-
-        x_min = float("inf")
-        for l in p.stdout.split(b'\n'):
-            if not l:continue
-            x = float(l.decode())
-            x_min = min(x_min, x)
-
-        A[(j,t)] = x_min
+import cpuinfo
 
 
-print("," + (",".join(map(str,JJJJ))))
-for t in TTTT:
-    print("%d" % t, end="")
-    size.append(t)
-    for j in JJJJ:
-        if (j,t) in A:
-            if j == 4:
-                block_size_4.append(A[(j,t)])
-            elif j == 8:
-                block_size_8.append(A[(j,t)])
-            elif j == 16:
-                block_size_16.append(A[(j,t)])
-            elif j == 32:
-                block_size_32.append(A[(j,t)])
-            elif j == 64:
-                block_size_64.append(A[(j,t)])
-            print(",%.3f" % A[(j,t)], end="")
-        else:
-            print(",", end="")
-    print()
+def run_benchmark():
+    block_sizes = (4, 8, 16, 32, 64)
+    test_sizes = list(range(128, 8192 + 128, 128))
+    results = {}
 
-plt.plot(size, block_size_4, marker='', label='4', color='blue')  
-plt.plot(size, block_size_8, marker='', label='8', color='green')  
-plt.plot(size, block_size_16, marker='', label='16', color='red')  
-plt.plot(size, block_size_32, marker='', label='32', color='orange')  
-plt.plot(size, block_size_64, marker='', label='64', color='pink')  
-plt.xlabel('size')
-plt.ylabel('CPU Cycle')
-plt.title('Intel i5-7200U BTB Size Test, Instruction' + str(sys.argv[1:]))
-plt.legend()  # Add legend to distinguish between different plots
-plt.grid(True)
-plt.savefig("Intel_i5_7200u_block_size_" +str(sys.argv[1:]) + ".png" )
-plt.show() 
+    for block_size in block_sizes:
+        cmd = f"./branch -a{block_size} -t{' '.join(sys.argv[1:])}"
+        for test_size in test_sizes:
+            if os.environ.get("SKIP") and block_size * test_size >= 200000:
+                continue
+            process = subprocess.run(
+                shlex.split(f"{cmd} -c{test_size}"),
+                stdout=subprocess.PIPE)
+            min_cycle = min(float(line.decode()) for line in process.stdout.split(b'\n') if line.strip())
+            results[(block_size, test_size)] = min_cycle
+
+    return results
+
+def parse_results(results, block_sizes, test_sizes):
+    parsed_data = {block_size: [] for block_size in block_sizes}
+    for test_size in test_sizes:
+        for block_size in block_sizes:
+            if (block_size, test_size) in results:
+                parsed_data[block_size].append(results[(block_size, test_size)])
+            else:
+                parsed_data[block_size].append(None)
+    return parsed_data
+
+def print_results(block_sizes, test_sizes, parsed_data):
+    print("," + ",".join(map(str, block_sizes)))
+    for test_size in test_sizes:
+        print(test_size, end="")
+        for block_size in block_sizes:
+            if parsed_data[block_size]:
+                print(f",{parsed_data[block_size].pop(0):.3f}", end="")
+            else:
+                print(",", end="")
+        print()
+
+def plot_data(test_sizes, parsed_data):
+    cpu_info = get_cpu_info()
+    plt.figure(figsize=(10, 6))
+    colors = ['blue', 'green', 'red', 'orange', 'pink']
+    for block_size, color in zip(parsed_data.keys(), colors):
+        plt.plot(test_sizes, parsed_data[block_size], marker='', label=str(block_size), color=color)
+    plt.xlabel('size')
+    plt.ylabel('CPU Cycle')
+    plt.title(f'{cpu_info} BTB Size Test, Instruction {sys.argv[1:]}')
+    plt.legend()
+    plt.grid(True)
+    plt.savefig(f"{cpu_info}_block_size_{sys.argv[1:]}.png")
+    plt.show()
+
+def get_cpu_info():
+    cpu_info = cpuinfo.get_cpu_info()
+    return cpu_info['brand_raw']
+
+
+def main():
+    results = run_benchmark()
+    block_sizes = (4, 8, 16, 32, 64)
+    test_sizes = list(range(128, 8192 + 128, 128))
+    parsed_data = parse_results(results, block_sizes, test_sizes)
+    print(parsed_data)
+    plot_data(test_sizes, parsed_data)
+
+if __name__ == "__main__":
+    main()

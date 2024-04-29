@@ -77,7 +77,7 @@ static void error(int status, int errnum, const char *fmt, ...)
 }
 #endif
 
-void scramble_btb();
+// void scramble_btb();
 
 #define G_COUNTERS_COUNT 10
 

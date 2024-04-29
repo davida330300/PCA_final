@@ -28,7 +28,7 @@
 
 void blob_alloc(struct blob *blob)
 {
-	int memfd = memfd_create("code_blob", MFD_HUGETLB | MFD_HUGE_X);
+	int memfd = memfd_create("code_blob", MFD_HUGETLB );
 	if (memfd < 0) {
 		error(-1, errno, "memfd");
 	}
@@ -39,7 +39,7 @@ void blob_alloc(struct blob *blob)
 
 	void *ptr =
 		mmap(FIXED_ADDR, ASSUMED_SZ, PROT_READ | PROT_WRITE | PROT_EXEC,
-		     MAP_SHARED | MAP_HUGETLB | MAP_HUGE_X | MAP_POPULATE,
+		     MAP_SHARED | MAP_HUGETLB | MAP_POPULATE,
 		     memfd, 0);
 	if (ptr == MAP_FAILED) {
 		fprintf(stderr,

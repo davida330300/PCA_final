@@ -4,6 +4,8 @@ import shlex
 import sys
 import matplotlib.pyplot as plt
 
+import cpuinfo
+
 def run_branch_command(command, sizes):
     results = {}
     for branch_type, options in command:
@@ -29,22 +31,28 @@ def print_data(branch_types, data):
         print()
 
 def plot_data(sizes, data):
+    cpu_info = get_cpu_info()
     plt.figure(figsize=(10, 6))
     for branch, color in zip(data.keys(), ['blue', 'green', 'red']):
         plt.plot(sizes, data[branch], marker='', label=branch, color=color)
     plt.xlabel('size')
     plt.ylabel('CPU Cycle')
-    plt.title('Intel i5_7200U BTB Size Test')
+    plt.title(cpu_info + 'BTB Size Test')
     plt.legend()
     plt.grid(True)
-    plt.savefig("Intel_instruction.png")
+    plt.savefig(cpu_info +"_instruction.png")
     plt.show()
+
+def get_cpu_info():
+    cpu_info = cpuinfo.get_cpu_info()
+    return cpu_info['brand_raw']
 
 def main():
     branch_types = ["jmp", "je taken", "jne not-taken"]
     sizes = list(range(128, 8192+128, 128))
     results = run_branch_command((("jmp", "-a8 -tjmp"), ("je taken", "-a8 -tje_always_taken"), ("jne not-taken", "-a8 -tjne_never_taken")), sizes)
     data = parse_results(results, branch_types)
+    print(data)
     plot_data(sizes, data)
 
 if __name__ == "__main__":
