@@ -58,7 +58,7 @@ def plot_data(test_sizes, parsed_data):
     plt.title(f'{cpu_info} BTB Size Test, Instruction {sys.argv[1:]}')
     plt.legend()
     plt.grid(True)
-    plt.savefig(f"{cpu_info}_block_size_{sys.argv[1:]}.png")
+    plt.savefig(f"result/{cpu_info}_block_size_{sys.argv[1:]}.png")
     plt.show()
 
 def get_cpu_info():

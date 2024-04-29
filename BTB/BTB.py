@@ -37,10 +37,10 @@ def plot_data(sizes, data):
         plt.plot(sizes, data[branch], marker='', label=branch, color=color)
     plt.xlabel('size')
     plt.ylabel('CPU Cycle')
-    plt.title(cpu_info + 'BTB Size Test')
+    plt.title(cpu_info + ' BTB Size Test')
     plt.legend()
     plt.grid(True)
-    plt.savefig(cpu_info +"_instruction.png")
+    plt.savefig("result/"+cpu_info +"_instruction.png")
     plt.show()
 
 def get_cpu_info():
