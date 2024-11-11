@@ -2,9 +2,9 @@ My **Meltdown attack and Branch Target Buffer (BTB)** research for CS593 Compute
 
 **Meltdown Attack**
 
-* The researchers initially tried to perform the Meltdown attack on an Intel i5-7200U processor, as the Meltdown vulnerability appears to affect all modern CPUs produced by Intel. However, experimental results show that the processor is not vulnerable to the Meltdown attack under the latest Linux kernel (6.5.0-28).
+* I tried to perform the Meltdown attack on an Intel i5-7200U processor, as the Meltdown vulnerability appears to affect all modern CPUs produced by Intel. However, experimental results show that the processor is not vulnerable to the Meltdown attack under the latest Linux kernel (6.5.0-28).
 * This suggests that some updates have been made to the Linux kernel to mitigate the impact of the Meltdown attack on Intel CPUs.
-* One of the updates may be the introduction of **KAISER (kernel-page-table isolation)** mechanism, which uses shadow address space paging structure to separate kernel space and user space, thereby reducing the threat posed by Meltdown vulnerability.
+* The updates of linux kernel 4.4.0-109 patch introduce **KAISER (kernel-page-table isolation)** mechanism, which uses shadow address space paging structure to separate kernel space and user space, thereby reducing the threat posed by Meltdown vulnerability.
 
 **Branch Target Buffer (BTB)**
 
@@ -19,12 +19,5 @@ My **Meltdown attack and Branch Target Buffer (BTB)** research for CS593 Compute
 
 **Future Work**
 
-* The report proposes some directions for future work, including:
 * Investigating the cause of the early increase in latency in AMD Zen 3 CPUs.
-* Reducing data noise and fluctuations to more accurately analyze the cause of the latency increase.
 * Determining the associativity of the BTB in AMD Zen 3 and Intel Sky Lake architectures.
-
-**Additional Information**
-
-* Several blog posts are used as references in the report, which provide information on BTB measurement, branch predictors, and CPU microarchitectures.
-* The report also references some research papers that discuss Meltdown and Spectre attacks, KASLR, and BTB replacement strategies.
