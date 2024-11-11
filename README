@@ -1,0 +1,30 @@
+My **Meltdown attack and Branch Target Buffer (BTB)** research for CS593 Computer Architecture(Prof. Kazem Tarma) In Purdue University
+
+**Meltdown Attack**
+
+* The researchers initially tried to perform the Meltdown attack on an Intel i5-7200U processor, as the Meltdown vulnerability appears to affect all modern CPUs produced by Intel. However, experimental results show that the processor is not vulnerable to the Meltdown attack under the latest Linux kernel (6.5.0-28).
+* This suggests that some updates have been made to the Linux kernel to mitigate the impact of the Meltdown attack on Intel CPUs.
+* One of the updates may be the introduction of **KAISER (kernel-page-table isolation)** mechanism, which uses shadow address space paging structure to separate kernel space and user space, thereby reducing the threat posed by Meltdown vulnerability.
+
+**Branch Target Buffer (BTB)**
+
+* The report details BTB experiments conducted on Intel i5-7200U (Kuby Lake) and AMD R5-5600H (Zen 3) architectures.
+
+* The experimental results show that when the number of instructions exceeds the BTB capacity, the execution latency will increase.
+* On Intel i5-7200U, latency starts to rise when the number of instructions exceeds 4000, which is consistent with its BTB design specification of 4096 entries.
+* On AMD R5-5600H, latency increases by 2 cycles after 1000 instructions, which may be due to its L1 BTB capacity of 1024 entries.
+* However, Zen 3 CPUs show a significant latency increase after about 5000 instructions, which is inconsistent with its L2 BTB capacity of 6566 entries. This anomaly may be caused by the replacement strategy, and during the experiment, the previous target entry may be replaced before the maximum BTB capacity is reached.
+* The experiment also found that unexecuted branches do not affect the BTB and execution latency.
+* The researchers also observed that an increase in instruction block size reduces the BTB's ability to handle function calls. This may be due to the associativity of the BTB structure.
+
+**Future Work**
+
+* The report proposes some directions for future work, including:
+* Investigating the cause of the early increase in latency in AMD Zen 3 CPUs.
+* Reducing data noise and fluctuations to more accurately analyze the cause of the latency increase.
+* Determining the associativity of the BTB in AMD Zen 3 and Intel Sky Lake architectures.
+
+**Additional Information**
+
+* Several blog posts are used as references in the report, which provide information on BTB measurement, branch predictors, and CPU microarchitectures.
+* The report also references some research papers that discuss Meltdown and Spectre attacks, KASLR, and BTB replacement strategies.
